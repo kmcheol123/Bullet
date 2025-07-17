@@ -23,24 +23,25 @@ public class Player : MonoBehaviour
     public Vector3 centerVector { get; set; }
     public Vector3 lookVector { get; set; }
     public Vector3 lookDir { get; set; }
-    public float tempFireTime { get; set; }
-    public float fireTime { get; } = 0.1f;
+    public float tempFireTime { get; set; } = 0f;
+    public float fireTime { get; } = 0.0001f;
 
     //public Joystick leftJoystick { get; set; }
     //public Joystick rightJoystick { get; set; }
     [field: SerializeField, Header("여기에 총알 프리펩을 넣어주세요")]
-    public GameObject bullet { get; set; }
+    public GameObject Bullet { get; set; }
     public Transform bulletPoint { get; set; }
 
     void Start()
     {
         childPlayer = this.transform.Find("childPlayer").gameObject;
-        bulletPoint = this.transform.Find("buildPoint");
+        bulletPoint = this.transform.Find("bulletPoint");
     }
 
     void Update()
     {
         Move();
+        Fire();
     }
     void Move()
     {
@@ -49,7 +50,7 @@ public class Player : MonoBehaviour
             if (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0)
             {
                 dir = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
-                Debug.Log(dir);
+                //Debug.Log(dir);
                 AnimMove();
             }
             else
@@ -92,12 +93,14 @@ public class Player : MonoBehaviour
 
     private void Fire()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButton(0))
         {
             if(tempFireTime > fireTime)
             {
                 tempFireTime = 0;
-                GameObject tempBullet = Instantiate(bullet, bulletPoint.position, Quaternion.LookRotation(lookDir));
+                Debug.Log(bulletPoint);
+                Debug.Log(Bullet);
+                GameObject tempBullet = Instantiate(Bullet, bulletPoint.position, Quaternion.LookRotation(lookDir));    
             }
             else if(tempFireTime < fireTime)
             {
@@ -110,7 +113,7 @@ public class Player : MonoBehaviour
         hp -= damage;
         if(hp <= 0 )
         {
-            //Destory(this.gameObject);
+            //Destroy(this.gameObject);
             Time.timeScale = 0;
         }
     }
